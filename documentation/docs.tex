@@ -1,0 +1,496 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage{xcolor}
+\title{SmartCalc Documentation}
+\date{December 2023}
+\author{charlsib}
+\begin{document}
+\maketitle
+
+
+\section{Introduction to backend}
+
+\subsection{\textbf{Файл parse\_utility\_functions.c}}
+
+\begin{itemize}
+    \item  @brief - Эта функция переводит алгебраическое выражение в инфиксной нотации - в постфиксную.
+
+    \item  @param expression - алгебраическое выражение в инфиксной нотации
+
+    \item  @return  - алгебраическое выражение в постфиксной нотациии
+\end{itemize}
+
+\textcolor{blue}{char * parse\_infix\_expr(char *expression);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Функция проверяет, является ли символ цифрой
+
+\item @param ch - проверяемый символ
+
+\item @return - 1 - True, 0 - False
+\end{itemize}
+
+\textcolor{blue}{int s21\_isdigit(char ch);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Функция добавляет символ в конец строки
+
+\item @param str - строка, к которой будет добавлен символ
+
+\item @param ch - символ
+\end{itemize}
+
+\textcolor{blue}{void add\_char(char *str, char ch);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Эта функция проверяет, является ли строка, с заданным смещением, началом какой-либо функции.
+
+\item @param str - Проверяемая строка
+
+\item @param pos - Смещение
+
+\item @return - True/False
+\end{itemize}
+
+\textcolor{blue}{int isfunction(char *str, int pos);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Эта функция определяет математическую функцию с заданной позиции строки
+
+\item @param str - проверяемая строка
+
+\item @param pos - заданное смещение строки
+
+\item @param offset - то смещение, на которое нужно сместить строку (дабы считать функцию asin 1 раз, а не два).
+
+\item @return результат - определенная функция (определяется одним символом из массива FUNCTIONS\_SUBSTITUTIONS)
+\end{itemize}
+
+\textcolor{blue}{char determine\_function(char *str, int pos, int *offset);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Функция проверяет, является ли данный символом оператором
+
+\item @param ch - проверяемый символ
+
+\item @return - True/False
+\end{itemize}
+
+\textcolor{blue}{int isoperator(char ch);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Функция проверяет приоритет данного символа
+
+\item @param ch проверямый символ
+
+\item @return значение приоритета оператора.
+\end{itemize}
+
+\textcolor{blue}{int get\_priority(char ch);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Функция проверяет является ли проверяемый символ функцией
+
+\item @param ch проверяемый символ
+
+\item @return True/False
+\end{itemize}
+
+\textcolor{blue}{int isfunction\_stack(char ch);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+
+\subsection{\textbf{stack\_calc.c}}
+\begin{itemize}
+\item @brief Эта функция пушит значение item на вершину стека
+
+\item @param item 
+\end{itemize}
+
+\textcolor{blue}{void push\_calc(double item);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Эта функция вытаскивает значение с вершины стека (если оно существует)
+
+\item @return значение на вершине стека (либо 0)
+\end{itemize}
+
+\textcolor{blue}{double pop\_calc();}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\subsection{\textbf{stack.c}}
+
+\begin{itemize}
+
+\item @brief Функция пушит элемент item на вершину стека
+
+\item @param item 
+\end{itemize}
+
+\textcolor{blue}{void push(char item);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Функция удаляет элемент, находящийся на вершине, если он есть и возвращает его
+
+\item @return элемент с вершины (либо 0, если нет элемента)
+\end{itemize}
+
+\textcolor{blue}{char pop();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\subsection{\textbf{calculate\_rpn.c}}
+
+\begin{itemize}
+\item @brief Функция совершает операцию между двумя операндами и одним оператором
+
+\item @param value\_1 первый операнд
+
+\item @param value\_2 второй операнд
+
+\item @param token оператор
+
+\item @param result результат операции
+
+\item @return код ошибки (0 - норм, 2 - не норм, деление на ноль)
+\end{itemize}
+
+\textcolor{blue}{int calculate\_binary(double value\_1, double value\_2, char token,
+                     double *result);}
+
+                     
+                     {\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+\item @brief Функция совершает унарную операцию над значением
+
+\item @param value значение, над которым будет производиться операция
+
+\item @param token унарная операция (префиксная функция, унарный минус)
+
+\item @param result значение, результат операции
+
+\item @return код ошибки - (0 норм, 1 - не норм, выход за область определения функции)
+\end{itemize}
+
+\textcolor{blue}{int calculate\_unary(double value, char token, double *result);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+\item @brief Функция производит подсчет алгебраического выражения в постфиксной нотации.
+
+\item @param expr строка, представляющая собой алгебраическое выражение, записанное в постфиксной нотации
+
+\item @param result - переменная, куда будет записываться вычисленное значение
+
+\item @return - код ошибки (0 - норм, 2 - деление на ноль, 1 - выход за границы области определения)
+\end{itemize}
+
+\textcolor{blue}{int calculate\_expression(char *expr, double *result);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\section{Introduction to frontend}
+
+\subsection{\textbf{mainwindow.cpp}}
+
+\begin{itemize}
+\item @brief Конструктор класса MainWindow, наследуется от QWidget. Здесь происходит настройка событий, связанных с нажатием кнопок
+\item @param parent Родитель нашего класса - QWidget
+\end{itemize}
+
+\textcolor{blue}{MainWindow::MainWindow(QWidget *parent);}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+
+\item @brief Деструктор класса
+
+\end{itemize}
+
+\textcolor{blue}{MainWindow::~MainWindow();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция добавляет текст кнопки в выходную строку по некоторым правилам
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::add\_str();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Функция очищает строку ввода
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::clear\_line\_result();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция реагирует на изменение текста и убирает пробелы
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::ignore\_whitespaces();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция удаляет один символ из строки ввода
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::delete\_one\_char();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция производит подсчет алгебраического выражения в инфиксной нотации
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::click\_equal\_sign();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция-валидатор. Проверяет первый введенный символ. Если символ не подчиняется определенным правилам, то он не вводится
+\item @param str - строка ввода
+\item @return - True/False
+
+\end{itemize}
+
+\textcolor{blue}{bool MainWindow::validate\_input\_empty\_line(QString str);}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Это функция-валидатор, она не позволяет написать несколько операторов подряд
+\item @param str - проверяемая строка
+\item @return - True/False
+
+\end{itemize}
+
+\textcolor{blue}{bool MainWindow::validate\_double\_oper\_input(QString str);}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция открывает диалоговое окно askrangewindow
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::ask\_for\_range();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция вызывает диалоговое окно, изображается график функции из строки ввода и с заданными диапазонами
+\item @param from\_X - левая граница области определения
+\item @param to\_X - правая граница области определения
+\item @param from\_Y - нижняя граница области значений
+\item @param to\_Y - верхняя граница области значений
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::mainGetPlot(double from\_X, double to\_X, double from\_Y, double to\_Y);}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Эта функция вызывает диалоговое окно Credit\_calc
+
+\end{itemize}
+
+\textcolor{blue}{void MainWindow::getCredit();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\subsection{\textbf{askrangewindow.cpp}}
+
+
+\begin{itemize}
+
+\item @brief Конструктор класса с наследованием
+\item @param parent 
+
+\end{itemize}
+
+
+\textcolor{blue}{AskRangeWindow::AskRangeWindow(QWidget *parent)}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+
+\item @brief Деструктор класса
+
+\end{itemize}
+
+\textcolor{blue}{AskRangeWindow::~AskRangeWindow();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+
+\item @brief Функция вызывается после нажатия на кнопку btn\_ok
+\item @param from\_X - левая граница области определения (ссылка)
+\item @param to\_X - правая граница области определения (ссылка)
+\item @param from\_Y - нижняя граница области значений (ссылка)
+\item @param to\_Y - верхняя граница области значений (ссылка)
+
+\end{itemize}
+
+\textcolor{blue}{void AskRangeWindow::get\_range\_nums(
+    double \&  from\_X, double \&  to\_X, double \& from\_Y, double \& to\_Y);}
+
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+\begin{itemize}
+
+\item @brief Закрытие окна
+
+\end{itemize}
+
+\textcolor{blue}{void AskRangeWindow::close\_win\_range();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\subsection{\textbf{credit\_calc.cpp}}
+
+\begin{itemize}
+
+\item @brief Конструктор класса Credit\_calc
+\item @param parent родитель
+
+\end{itemize}
+
+\textcolor{blue}{Credit\_calc::Credit\_calc(QWidget *parent);}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Деструктор класса
+
+\end{itemize}
+
+\textcolor{blue}{Credit\_calc::~Credit\_calc();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+\item @brief Отрисовка таблицы после ввода всех данных
+
+
+\end{itemize}
+
+\textcolor{blue}{void Credit\_calc::getTable();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\subsection{\textbf{my\_plot.cpp}}
+
+\begin{itemize}
+
+\item @brief Конструктор класса 
+\item @param parent родитель
+\item @param from\_X - левая граница области определения
+\item @param to\_X - правая граница области определения
+\item @param from\_Y - нижняя граница области значений
+\item @param to\_Y - верхняя граница области значений
+\item @param expression - функция
+
+\end{itemize}
+
+
+\textcolor{blue}{my\_plot::my\_plot(QWidget *parent, double from\_X, double to\_X, double from\_Y, double to\_Y, QString expression)}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+\begin{itemize}
+
+                 
+\item @brief Деструктор класса
+
+\end{itemize}
+
+\textcolor{blue}{my\_plot::~my\_plot();}
+
+{\color{red} \rule{\linewidth}{0.5mm}}
+
+
+
+\end{document}
+
+
